@@ -1,820 +1,1156 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Door Ordering Tool - Alta Cal</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
-            background: #f5f5f5;
-            padding: 20px;
-            line-height: 1.6;
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .header {
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            margin-bottom: 30px;
-        }
-
-        h1 {
-            font-size: 32px;
-            color: #1a1a1a;
-            margin-bottom: 20px;
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            transition: all 0.2s;
-        }
-
-        .btn-primary {
-            background: #2563eb;
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: #1d4ed8;
-        }
-
-        .btn-success {
-            background: #16a34a;
-            color: white;
-        }
-
-        .btn-success:hover {
-            background: #15803d;
-        }
-
-        .btn-danger {
-            background: #dc2626;
-            color: white;
-            padding: 8px 12px;
-            font-size: 12px;
-        }
-
-        .btn-danger:hover {
-            background: #b91c1c;
-        }
-
-        .tabs {
-            display: flex;
-            gap: 5px;
-            flex-wrap: wrap;
-            margin-top: 20px;
-        }
-
-        .tab {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .tab-btn {
-            padding: 12px 20px;
-            border: none;
-            background: #e5e7eb;
-            color: #374151;
-            cursor: pointer;
-            font-weight: 600;
-            border-radius: 8px 8px 0 0;
-            transition: all 0.2s;
-        }
-
-        .tab-btn.active {
-            background: #2563eb;
-            color: white;
-        }
-
-        .tab-btn:hover:not(.active) {
-            background: #d1d5db;
-        }
-
-        .main-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-        }
-
-        @media (max-width: 1024px) {
-            .main-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .card {
-            background: white;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-        }
-
-        .card h2 {
-            font-size: 20px;
-            color: #1a1a1a;
-            margin-bottom: 20px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-
-        label {
-            display: block;
-            font-size: 14px;
-            font-weight: 600;
-            color: #374151;
-            margin-bottom: 8px;
-        }
-
-        input, select, textarea {
-            width: 100%;
-            padding: 10px 12px;
-            border: 2px solid #e5e7eb;
-            border-radius: 8px;
-            font-size: 14px;
-            transition: border 0.2s;
-        }
-
-        input:focus, select:focus, textarea:focus {
-            outline: none;
-            border-color: #2563eb;
-        }
-
-        textarea {
-            resize: vertical;
-            min-height: 100px;
-        }
-
-        .help-text {
-            font-size: 12px;
-            color: #6b7280;
-            margin-top: 5px;
-        }
-
-        .summary-item {
-            border-left: 4px solid #2563eb;
-            padding: 15px;
-            margin-bottom: 15px;
-            background: #f9fafb;
-            border-radius: 4px;
-        }
-
-        .summary-category {
-            font-size: 11px;
-            font-weight: 700;
-            color: #2563eb;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .summary-item-name {
-            font-size: 15px;
-            font-weight: 600;
-            color: #1a1a1a;
-            margin: 5px 0;
-        }
-
-        .summary-details {
-            font-size: 13px;
-            color: #6b7280;
-        }
-
-        .empty-summary {
-            text-align: center;
-            padding: 60px 20px;
-            color: #9ca3af;
-        }
-
-        .sticky {
-            position: sticky;
-            top: 20px;
-        }
-
-        @media print {
-            body {
-                background: white;
-                padding: 0;
-            }
-            .header, .tabs, .btn, .card {
-                box-shadow: none;
-            }
-            .no-print {
-                display: none !important;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>Aloha Doors - Data Spec Sheet Creator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+      background: linear-gradient(135deg, #1e3a5f 0%, #0c4a6e 100%);
+      min-height: 100vh;
+      padding: 30px 15px;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    /* COMPANY HEADER */
+    .company-header {
+      background: white;
+      padding: 35px 40px;
+      border-radius: 16px;
+      box-shadow: 0 15px 50px rgba(0,0,0,0.3);
+      margin-bottom: 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .company-name {
+      font-size: 36px;
+      font-weight: 900;
+      color: #0891b2;
+      margin-bottom: 5px;
+    }
+    
+    .company-address {
+      font-size: 13px;
+      color: #6b7280;
+      line-height: 1.5;
+    }
+    
+    .form-title h1 {
+      font-size: 24px;
+      font-weight: 800;
+      color: #1e3a5f;
+      text-align: right;
+    }
+    
+    .form-title p {
+      font-size: 12px;
+      color: #6b7280;
+      text-align: right;
+    }
+    
+    /* SECTIONS */
+    .section {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+    
+    .section-header {
+      background: linear-gradient(135deg, #1e3a5f 0%, #0c4a6e 100%);
+      padding: 18px 30px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      cursor: pointer;
+    }
+    
+    .section-header:hover {
+      background: linear-gradient(135deg, #1e4a6f 0%, #0c5a7e 100%);
+    }
+    
+    .section-number {
+      width: 40px;
+      height: 40px;
+      background: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 18px;
+      color: #1e3a5f;
+      flex-shrink: 0;
+    }
+    
+    .section-info h2 {
+      font-size: 18px;
+      font-weight: 700;
+      color: white;
+    }
+    
+    .section-info p {
+      font-size: 12px;
+      color: rgba(255,255,255,0.8);
+    }
+    
+    .section-body {
+      padding: 30px;
+      display: block;
+    }
+    
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+    
+    .form-grid-3 {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .form-grid-2 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .span-2 { grid-column: span 2; }
+    .span-3 { grid-column: span 3; }
+    .span-4 { grid-column: span 4; }
+    
+    .input-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    
+    .label {
+      font-size: 11px;
+      font-weight: 700;
+      color: #374151;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    input, select, textarea {
+      padding: 12px;
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: inherit;
+      transition: all 0.2s;
+      background: white;
+    }
+    
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: #0891b2;
+      box-shadow: 0 0 0 3px rgba(8, 145, 178, 0.1);
+    }
+    
+    textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+    
+    .subsection-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #1e3a5f;
+      margin: 25px 0 15px 0;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #e5e7eb;
+    }
+    
+    .subsection-title:first-child {
+      margin-top: 0;
+    }
+    
+    .checkbox-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    
+    .checkbox-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: #374151;
+    }
+    
+    .checkbox-item input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+    
+    /* ACTION BAR */
+    .action-bar {
+      position: sticky;
+      bottom: 20px;
+      background: white;
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 15px 50px rgba(0,0,0,0.3);
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      z-index: 100;
+    }
+    
+    .btn {
+      padding: 16px 35px;
+      font-size: 15px;
+      font-weight: 800;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: white;
+      box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 35px rgba(16, 185, 129, 0.5);
+    }
+    
+    .btn-secondary {
+      background: white;
+      color: #1e3a5f;
+      border: 2px solid #1e3a5f;
+    }
+    
+    .btn-secondary:hover {
+      background: #f0f9ff;
+    }
+    
+    @media (max-width: 1000px) {
+      .form-grid { grid-template-columns: repeat(2, 1fr); }
+      .span-3, .span-4 { grid-column: span 2; }
+    }
+    
+    @media (max-width: 600px) {
+      .form-grid, .form-grid-2, .form-grid-3 { grid-template-columns: 1fr; }
+      .span-2, .span-3, .span-4 { grid-column: span 1; }
+      .company-header { flex-direction: column; text-align: center; }
+      .form-title h1, .form-title p { text-align: center; }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header no-print">
-            <h1>🚪 Door Ordering Tool</h1>
-            <div class="header-actions">
-                <button class="btn btn-primary" onclick="printAllOrders()">🖨️ Print All Orders</button>
-                <button class="btn btn-success" onclick="addNewOrder()">➕ Add New Door</button>
-            </div>
-            <div class="tabs" id="orderTabs"></div>
+  <div class="container">
+    
+    <!-- COMPANY HEADER -->
+    <div class="company-header">
+      <div>
+        <div class="company-name">Aloha Doors, Inc.</div>
+        <div class="company-address">
+          214 Main St. #119, El Segundo, CA 90245<br>
+          Professional Door & Hardware Solutions
         </div>
-
-        <div class="main-grid">
-            <!-- Configuration Panel -->
-            <div id="configPanel">
-                <!-- Door Information -->
-                <div class="card">
-                    <h2>Door Information</h2>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Width (inches)</label>
-                            <input type="number" id="doorWidth" oninput="updateOrder()" placeholder="36">
-                        </div>
-                        <div class="form-group">
-                            <label>Height (inches)</label>
-                            <input type="number" id="doorHeight" oninput="updateOrder()" placeholder="84">
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Material</label>
-                            <select id="doorMaterial" onchange="updateOrder()">
-                                <option value="HM">HM - Hollow Metal</option>
-                                <option value="WD">WD - Wood</option>
-                                <option value="AL">AL - Aluminum</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Fire Rating</label>
-                            <select id="doorFireRating" onchange="updateOrder()">
-                                <option value="None">None</option>
-                                <option value="20 Min">20 Min</option>
-                                <option value="45 Min">45 Min</option>
-                                <option value="90 Min">90 Min</option>
-                                <option value="3 Hour">3 Hour</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Handing</label>
-                        <select id="doorHanding" onchange="updateOrder()">
-                            <option value="LH">LH - Left Hand</option>
-                            <option value="RH">RH - Right Hand</option>
-                            <option value="LHR">LHR - Left Hand Reverse</option>
-                            <option value="RHR">RHR - Right Hand Reverse</option>
-                        </select>
-                    </div>
-                </div>
-
-                <!-- Frame -->
-                <div class="card">
-                    <h2>Frame</h2>
-                    <div class="form-group">
-                        <label>Frame Type</label>
-                        <select id="frameType" onchange="updateOrder()">
-                            <option value="KD">3-Piece Knock Down (KD)</option>
-                            <option value="Welded">One-Piece Welded</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Anchors</label>
-                        <select id="frameAnchors" onchange="updateOrder()">
-                            <option value="Steel Stud">Steel Stud</option>
-                            <option value="Wood Stud">Wood Stud</option>
-                            <option value="Masonry">Masonry</option>
-                            <option value="Compression">Compression</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Silencers</label>
-                        <input type="number" id="frameSilencers" value="3" oninput="updateOrder()">
-                        <div class="help-text">Standard is 3 per opening</div>
-                    </div>
-                </div>
-
-                <!-- Hinges -->
-                <div class="card">
-                    <h2>Hinges</h2>
-                    <div class="form-group">
-                        <label>Quantity (Auto-Calculated)</label>
-                        <input type="number" id="hingeQuantity" value="3" oninput="updateOrder()">
-                        <div class="help-text">3 for ≤84", 4 for ≤96", 5 for >96"</div>
-                    </div>
-                    <div class="form-group">
-                        <label>Type</label>
-                        <select id="hingeType" onchange="updateOrder()">
-                            <option value="Standard">Standard</option>
-                            <option value="Heavy Duty">Heavy Duty</option>
-                            <option value="Wide Throw">Wide Throw</option>
-                        </select>
-                    </div>
-                </div>
-
-                <!-- Lockset -->
-                <div class="card">
-                    <h2>Lockset</h2>
-                    <div class="form-group">
-                        <label>Lockset Type</label>
-                        <select id="locksetType" onchange="updateOrder()">
-                            <option value="None">None</option>
-                            <option value="Schlage Lever Lock">Schlage Lever Lock</option>
-                            <option value="Schlage IC - 7 Pin - AL Series">Schlage IC - 7 Pin - AL Series</option>
-                            <option value="BEST IC - 7 Pin">BEST IC - 7 Pin</option>
-                        </select>
-                    </div>
-                    <div id="locksetDetails" style="display: none;">
-                        <div class="form-group">
-                            <label>Function</label>
-                            <select id="locksetFunction" onchange="updateOrder()">
-                                <option value="Passage">Passage</option>
-                                <option value="Privacy">Privacy</option>
-                                <option value="Office">Office</option>
-                                <option value="Classroom">Classroom</option>
-                                <option value="Storeroom">Storeroom</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Core Type</label>
-                            <select id="locksetCore" onchange="updateOrder()">
-                                <option value="None">None</option>
-                                <option value="7-Pin SFIC">7-Pin SFIC</option>
-                                <option value="7-Pin LFIC">7-Pin LFIC</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Keying (MK/GMK)</label>
-                            <input type="text" id="locksetKeying" oninput="updateOrder()" placeholder="Master Key ID">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Panic Bar -->
-                <div class="card">
-                    <h2>Exit Device (Panic Bar)</h2>
-                    <div class="form-group">
-                        <label>Type</label>
-                        <select id="panicType" onchange="updateOrder()">
-                            <option value="None">None</option>
-                            <option value="Rim">Von Duprin Rim</option>
-                            <option value="Concealed Vertical Rod">Von Duprin Concealed VR</option>
-                            <option value="Surface Vertical Rod">Von Duprin Surface VR</option>
-                        </select>
-                    </div>
-                    <div id="panicDetails" style="display: none;">
-                        <div class="form-group">
-                            <label>Outside Trim</label>
-                            <select id="panicTrim" onchange="updateOrder()">
-                                <option value="None">None</option>
-                                <option value="Escutcheon">Escutcheon</option>
-                                <option value="Lever">Lever</option>
-                                <option value="Thumbpiece">Thumbpiece</option>
-                                <option value="Keyed">Keyed</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Closer -->
-                <div class="card">
-                    <h2>Door Closer</h2>
-                    <div class="form-group">
-                        <label>Model</label>
-                        <select id="closerModel" onchange="updateOrder()">
-                            <option value="None">None</option>
-                            <option value="LCN 4041">LCN 4041</option>
-                            <option value="Norton 8500">Norton 8500</option>
-                            <option value="Cal-Royal 900 Series">Cal-Royal 900 Series</option>
-                        </select>
-                    </div>
-                    <div id="closerDetails" style="display: none;">
-                        <div class="form-group">
-                            <label>Arm Type</label>
-                            <select id="closerArm" onchange="updateOrder()">
-                                <option value="Regular">Regular</option>
-                                <option value="Parallel">Parallel</option>
-                                <option value="Top Jamb">Top Jamb</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Flush Bolts -->
-                <div class="card">
-                    <h2>Flush Bolts (Pairs)</h2>
-                    <div class="form-group">
-                        <label>Type</label>
-                        <select id="flushBolts" onchange="updateOrder()">
-                            <option value="None">None</option>
-                            <option value="Manual">Manual</option>
-                            <option value="Automatic">Automatic</option>
-                        </select>
-                    </div>
-                </div>
-
-                <!-- Notes -->
-                <div class="card">
-                    <h2>Notes</h2>
-                    <div class="form-group">
-                        <textarea id="orderNotes" oninput="updateOrder()" placeholder="Special instructions or requirements..."></textarea>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Order Summary -->
-            <div>
-                <div class="card sticky">
-                    <h2>📋 Order Summary - Door #<span id="summaryDoorNumber">1</span></h2>
-                    <div id="orderSummary"></div>
-                </div>
-            </div>
-        </div>
+      </div>
+      <div class="form-title">
+        <h1>Data Spec Sheet Creator</h1>
+        <p>Door Installation Specifications</p>
+      </div>
     </div>
 
-    <script>
-        let orders = [createNewOrderData()];
-        let activeOrderIndex = 0;
+    <!-- SECTION 1: DOOR UNIT IDENTIFICATION -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-number">1</div>
+        <div class="section-info">
+          <h2>Door Unit Identification</h2>
+          <p>Basic door information and dimensions</p>
+        </div>
+      </div>
+      <div class="section-body">
+        <div class="form-grid">
+          <div class="input-wrapper">
+            <label class="label">Door Type</label>
+            <select id="doorType">
+              <option value="">Select...</option>
+              <option value="Exterior Entry">Exterior Entry</option>
+              <option value="Interior">Interior</option>
+              <option value="Fire-Rated">Fire-Rated</option>
+              <option value="Patio">Patio</option>
+              <option value="French">French</option>
+              <option value="Sliding">Sliding</option>
+              <option value="Pocket">Pocket</option>
+              <option value="Dutch">Dutch</option>
+            </select>
+          </div>
+          <div class="input-wrapper">
+            <label class="label">Material</label>
+            <select id="doorMaterial">
+              <option value="">Select...</option>
+              <option value="Steel">Steel</option>
+              <option value="Fiberglass">Fiberglass</option>
+              <option value="Wood">Wood</option>
+              <option value="Composite">Composite</option>
+              <option value="Aluminum">Aluminum</option>
+            </select>
+          </div>
+          <div class="input-wrapper">
+            <label class="label">Panel Style</label>
+            <select id="panelStyle">
+              <option value="">Select...</option>
+              <option value="Flush">Flush</option>
+              <option value="6-Panel">6-Panel</option>
+              <option value="Shaker">Shaker</option>
+              <option value="Craftsman">Craftsman</option>
+              <option value="Smooth">Smooth</option>
+              <option value="Textured">Textured</option>
+            </select>
+          </div>
+          <div class="input-wrapper">
+            <label class="label">Thickness</label>
+            <select id="doorThickness">
+              <option value="">Select...</option>
+              <option value='1-3/8"'>1-3/8"</option>
+              <option value='1-3/4"'>1-3/4"</option>
+            </select>
+          </div>
+          <div class="input-wrapper">
+            <label class="label">Rough Opening (RO)</label>
+            <input type="text" id="roughOpening" placeholder='e.g., 38" x 82-1/2"'>
+          </div>
+          <div class="input-wrapper">
+            <label class="label">Unit Size</label>
+            <input type="text" id="unitSize" placeholder='e.g., 36" x 80"'>
+          </div>
+          <div class="input-wrapper">
+            <label class="label">Net Frame Size</label>
+            <input type="text" id="netFrameSize" placeholder='e.g., 37-1/2" x 81-1/2"'>
+          </div>
+          <div class="input-wrapper">
+            <label class="label">Door Slab Size</label>
+            <input type="text" id="slabSize" placeholder='e.g., 36" x 80"'>
+          </div>
+          <div class="input-wrapper">
+            <label class="label">Swing Direction</label>
+            <select id="swingDirection">
+              <option value="">Select...</option>
+              <option value="Left-Hand Inswing">Left-Hand Inswing</option>
+              <option value="Right-Hand Inswing">Right-Hand Inswing</option>
+              <option value="Left-Hand Outswing">Left-Hand Outswing</option>
+              <option value="Right-Hand Outswing">Right-Hand Outswing</option>
+            </select>
+          </div>
+          <div class="input-wrapper">
+            <label class="label">Fire Rating</label>
+            <select id="fireRating">
+              <option value="">Select...</option>
+              <option value="Non-Rated">Non-Rated</option>
+              <option value="20 min">20 min</option>
+              <option value="45 min">45 min</option>
+              <option value="60 min">60 min</option>
+              <option value="90 min">90 min</option>
+            </select>
+          </div>
+          <div class="input-wrapper">
+            <label class="label">Energy Rating (U-Factor)</label>
+            <input type="text" id="uFactor" placeholder="e.g., 0.30">
+          </div>
+          <div class="input-wrapper">
+            <label class="label">SHGC (if glazed)</label>
+            <input type="text" id="shgc" placeholder="e.g., 0.25">
+          </div>
+          <div class="input-wrapper span-2">
+            <label class="label">Manufacturer / Model / SKU</label>
+            <input type="text" id="manufacturer" placeholder="e.g., Therma-Tru S2205 / SKU 12345">
+          </div>
+        </div>
+      </div>
+    </div>
 
-        function createNewOrderData() {
-            return {
-                id: Date.now(),
-                doorInfo: {
-                    width: '',
-                    height: '',
-                    material: 'HM',
-                    fireRating: 'None',
-                    handing: 'LH'
-                },
-                frame: {
-                    type: 'KD',
-                    anchors: 'Steel Stud',
-                    silencers: 3
-                },
-                hinges: {
-                    quantity: 3,
-                    type: 'Standard'
-                },
-                lockset: {
-                    type: 'None',
-                    function: 'Passage',
-                    core: 'None',
-                    keying: ''
-                },
-                panicBar: {
-                    type: 'None',
-                    trim: 'None'
-                },
-                closer: {
-                    model: 'None',
-                    arm: 'Regular'
-                },
-                flushBolts: 'None',
-                notes: ''
-            };
-        }
+    <!-- SECTION 2: FRAME / JAMB ASSEMBLY -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-number">2</div>
+        <div class="section-info">
+          <h2>Frame / Jamb Assembly</h2>
+          <p>Frame construction and components</p>
+        </div>
+      </div>
+      <div class="section-body">
+        <div class="form-grid">
+          <div class="input-wrapper">
+            <label class="label">Jamb Material</label>
+            <select id="jambMaterial">
+              <option value="">Select...</option>
+              <option value="Wood">Wood</option>
+              <option value="Composite">Composite</option>
+              <option value="Rot-Proof PVC">Rot-Proof PVC</option>
+              <option value="Steel">Steel</option>
+              <option value="Aluminum">Aluminum</option>
+            </select>
+          </div>
+          <div class="input-wrapper">
+            <label class="label">Jamb Width</label>
+            <select id="jambWidth">
+              <option value="">Select...</option>
+              <option value='4-9/16"'>4-9/16"</option>
+              <option value='5-1/4"'>5-1/4"</option>
+              <option value='6-9/16"'>6-9/16"</option>
+              <option value="Custom">Custom</option>
+            </select>
+          </div>
+          <div class="input-wrapper">
+            <label class="label">Prehung or Slab</label>
+            <select id="prehungSlab">
+              <option value="">Select...</option>
+              <option value="Prehung">Prehung</option>
+              <option value="Slab Only">Slab Only</option>
+            </select>
+          </div>
+          <div class="input-wrapper">
+            <label class="label">Finish</label>
+            <select id="jambFinish">
+              <option value="">Select...</option>
+              <option value="Factory Primed">Factory Primed</option>
+              <option value="Prefinished">Prefinished</option>
+              <option value="Unfinished">Unfinished</option>
+            </select>
+          </div>
+          <div class="input-wrapper">
+            <label class="label">Weatherstripping Type</label>
+            <input type="text" id="weatherstripping" placeholder="e.g., Compression, Q-Lon">
+          </div>
+          <div class="input-wrapper">
+            <label class="label">Weatherstripping Color</label>
+            <input type="text" id="weatherstripColor" placeholder="e.g., White, Bronze">
+          </div>
+          <div class="input-wrapper">
+            <label class="label">Sill/Threshold Type</label>
+            <select id="sillType">
+              <option value="">Select...</option>
+              <option value="Composite">Composite</option>
+              <option value="Aluminum">Aluminum</option>
+              <option value="Adjustable">Adjustable</option>
+              <option value="ADA Compliant">ADA Compliant</option>
+              <option value="Oak">Oak</option>
+            </select>
+          </div>
+          <div class="input-wrapper">
+            <label class="label">Sill Height</label>
+            <input type="text" id="sillHeight" placeholder='e.g., 1-1/4"'>
+          </div>
+          <div class="input-wrapper">
+            <label class="label">Hinge Count</label>
+            <select id="hingeCount">
+              <option value="">Select...</option>
+              <option value="3">3 Hinges</option>
+              <option value="4">4 Hinges</option>
+              <option value="5">5 Hinges</option>
+            </select>
+          </div>
+          <div class="input-wrapper">
+            <label class="label">Hinge Type/Finish</label>
+            <input type="text" id="hingeFinish" placeholder="e.g., 4x4 Ball Bearing, Satin Nickel">
+          </div>
+          <div class="input-wrapper span-2">
+            <label class="label">Additional Frame Notes</label>
+            <input type="text" id="frameNotes" placeholder="e.g., Rot-proof lower jamb supports, sill pan included">
+          </div>
+        </div>
+      </div>
+    </div>
 
-        function renderTabs() {
-            const tabsContainer = document.getElementById('orderTabs');
-            tabsContainer.innerHTML = '';
-            
-            orders.forEach((order, index) => {
-                const tabDiv = document.createElement('div');
-                tabDiv.className = 'tab';
-                
-                const btn = document.createElement('button');
-                btn.className = 'tab-btn' + (index === activeOrderIndex ? ' active' : '');
-                btn.textContent = `Door #${index + 1}`;
-                btn.onclick = () => switchToOrder(index);
-                
-                tabDiv.appendChild(btn);
-                
-                if (orders.length > 1) {
-                    const deleteBtn = document.createElement('button');
-                    deleteBtn.className = 'btn btn-danger';
-                    deleteBtn.textContent = '✕';
-                    deleteBtn.onclick = () => removeOrder(index);
-                    tabDiv.appendChild(deleteBtn);
-                }
-                
-                tabsContainer.appendChild(tabDiv);
-            });
-        }
+    <!-- SECTION 3: HARDWARE SET -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-number">3</div>
+        <div class="section-info">
+          <h2>Hardware Set</h2>
+          <p>Locksets, handles, and accessories</p>
+        </div>
+      </div>
+      <div class="section-body">
+        <div class="subsection-title">A. Standard Hardware</div>
+        <div class="form-grid">
+          <div class="input-wrapper">
+            <label class="label">Hinge Size/Finish</label>
+            <input type="text" id="hingeSpec" placeholder="e.g., 4x4, Satin Nickel">
+          </div>
+          <div class="input-wrapper">
+            <label class="label">Latch/Strike Plate</label>
+            <input type="text" id="strikeSpec" placeholder="e.g., ASA Strike, T-Strike">
+          </div>
+          <div class="input-wrapper">
+            <label class="label">Deadbolt Bore Pattern</label>
+            <input type="text" id="borePattern" placeholder='e.g., 2-1/8" bore, 2-3/8" backset'>
+          </div>
+          <div class="input-wrapper">
+            <label class="label">Reinforcement Plates</label>
+            <select id="reinforcePlates">
+              <option value="">Select...</option>
+              <option value="Included">Included</option>
+              <option value="Not Required">Not Required</option>
+              <option value="By Others">By Others</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="subsection-title">B. Lockset / Handle</div>
+        <div class="form-grid">
+          <div class="input-wrapper">
+            <label class="label">Handleset Style</label>
+            <select id="handleStyle">
+              <option value="">Select...</option>
+              <option value="Single Cylinder">Single Cylinder</option>
+              <option value="Double Cylinder">Double Cylinder</option>
+              <option value="Keypad/Smart Lock">Keypad/Smart Lock</option>
+              <option value="Lever Handle">Lever Handle</option>
+              <option value="Knob">Knob</option>
+              <option value="Passage">Passage (No Lock)</option>
+            </select>
+          </div>
+          <div class="input-wrapper">
+            <label class="label">Handleset Finish</label>
+            <select id="handleFinish">
+              <option value="">Select...</option>
+              <option value="Satin Nickel">Satin Nickel</option>
+              <option value="Oil-Rubbed Bronze">Oil-Rubbed Bronze</option>
+              <option value="Matte Black">Matte Black</option>
+              <option value="Polished Chrome">Polished Chrome</option>
+              <option value="Antique Brass">Antique Brass</option>
+              <option value="Satin Chrome">Satin Chrome</option>
+            </select>
+          </div>
+          <div class="input-wrapper span-2">
+            <label class="label">Lockset Model/Brand</label>
+            <input type="text" id="locksetModel" placeholder="e.g., Schlage FE285, Kwikset Powerbolt">
+          </div>
+        </div>
+        
+        <div class="subsection-title">C. Additional Hardware</div>
+        <div class="form-grid">
+          <div class="input-wrapper">
+            <label class="label">Door Sweep</label>
+            <input type="text" id="doorSweep" placeholder="e.g., Automatic, Brush type">
+          </div>
+          <div class="input-wrapper">
+            <label class="label">Astragal (Double Doors)</label>
+            <select id="astragal">
+              <option value="">Select...</option>
+              <option value="N/A">N/A - Single Door</option>
+              <option value="T-Astragal">T-Astragal</option>
+              <option value="Overlapping">Overlapping</option>
+              <option value="Flush Bolt Type">Flush Bolt Type</option>
+            </select>
+          </div>
+          <div class="input-wrapper">
+            <label class="label">Security Plate</label>
+            <select id="securityPlate">
+              <option value="">Select...</option>
+              <option value="None">None</option>
+              <option value="Included">Included</option>
+              <option value="By Others">By Others</option>
+            </select>
+          </div>
+          <div class="input-wrapper">
+            <label class="label">Door Closer</label>
+            <select id="doorCloser">
+              <option value="">Select...</option>
+              <option value="None">None</option>
+              <option value="LCN 4041">LCN 4041</option>
+              <option value="Norton 8500">Norton 8500</option>
+              <option value="Cal-Royal 900">Cal-Royal 900</option>
+              <option value="By Others">By Others</option>
+            </select>
+          </div>
+          <div class="input-wrapper">
+            <label class="label">Peephole/Viewer</label>
+            <select id="peephole">
+              <option value="">Select...</option>
+              <option value="None">None</option>
+              <option value="Included">Included</option>
+              <option value="By Others">By Others</option>
+            </select>
+          </div>
+          <div class="input-wrapper">
+            <label class="label">Kick Plate</label>
+            <select id="kickPlate">
+              <option value="">Select...</option>
+              <option value="None">None</option>
+              <option value="8 inch">8" Kick Plate</option>
+              <option value="10 inch">10" Kick Plate</option>
+              <option value="By Others">By Others</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
 
-        function switchToOrder(index) {
-            activeOrderIndex = index;
-            loadOrderToForm();
-            renderTabs();
-        }
+    <!-- SECTION 4: GLASS / LITE PACKAGE -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-number">4</div>
+        <div class="section-info">
+          <h2>Glass / Lite Package</h2>
+          <p>Glazing specifications (if applicable)</p>
+        </div>
+      </div>
+      <div class="section-body">
+        <div class="form-grid">
+          <div class="input-wrapper">
+            <label class="label">Lite Configuration</label>
+            <select id="liteConfig">
+              <option value="">Select...</option>
+              <option value="None">None (Solid Door)</option>
+              <option value="Full Lite">Full Lite</option>
+              <option value="Half Lite">Half Lite</option>
+              <option value="1/4 Lite">1/4 Lite</option>
+              <option value="Sidelite">Sidelite</option>
+              <option value="Transom">Transom</option>
+              <option value="Custom">Custom</option>
+            </select>
+          </div>
+          <div class="input-wrapper">
+            <label class="label">Lite Size</label>
+            <input type="text" id="liteSize" placeholder='e.g., 22" x 36"'>
+          </div>
+          <div class="input-wrapper">
+            <label class="label">Glazing Type</label>
+            <select id="glazingType">
+              <option value="">Select...</option>
+              <option value="Tempered">Tempered</option>
+              <option value="Double Pane">Double Pane</option>
+              <option value="Triple Pane">Triple Pane</option>
+              <option value="Low-E">Low-E</option>
+              <option value="Argon Fill">Argon Fill</option>
+              <option value="Impact Rated">Impact Rated</option>
+            </select>
+          </div>
+          <div class="input-wrapper">
+            <label class="label">Grid Pattern</label>
+            <select id="gridPattern">
+              <option value="">Select...</option>
+              <option value="None">None</option>
+              <option value="SDL - Colonial">SDL - Colonial</option>
+              <option value="SDL - Prairie">SDL - Prairie</option>
+              <option value="GBG - Colonial">GBG - Colonial</option>
+              <option value="GBG - Prairie">GBG - Prairie</option>
+              <option value="Custom">Custom</option>
+            </select>
+          </div>
+          <div class="input-wrapper">
+            <label class="label">Grid Color</label>
+            <input type="text" id="gridColor" placeholder="e.g., White, Bronze, Black">
+          </div>
+          <div class="input-wrapper">
+            <label class="label">Glass Tint/Privacy</label>
+            <input type="text" id="glassTint" placeholder="e.g., Clear, Frosted, Rain">
+          </div>
+        </div>
+      </div>
+    </div>
 
-        function addNewOrder() {
-            orders.push(createNewOrderData());
-            activeOrderIndex = orders.length - 1;
-            loadOrderToForm();
-            renderTabs();
-        }
+    <!-- SECTION 5: WEATHER & SEALANT SYSTEM -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-number">5</div>
+        <div class="section-info">
+          <h2>Weather & Sealant System</h2>
+          <p>Weatherproofing and sealing specifications</p>
+        </div>
+      </div>
+      <div class="section-body">
+        <div class="form-grid">
+          <div class="input-wrapper">
+            <label class="label">Exterior Sealant Type</label>
+            <select id="extSealant">
+              <option value="">Select...</option>
+              <option value="Polyurethane">Polyurethane</option>
+              <option value="Silicone">Silicone</option>
+              <option value="Elastomeric">Elastomeric</option>
+              <option value="Acrylic Latex">Acrylic Latex</option>
+            </select>
+          </div>
+          <div class="input-wrapper">
+            <label class="label">Backer Rod Size</label>
+            <input type="text" id="backerRod" placeholder='e.g., 1/2", 3/4"'>
+          </div>
+          <div class="input-wrapper">
+            <label class="label">Sill Pan System</label>
+            <select id="sillPan">
+              <option value="">Select...</option>
+              <option value="Factory">Factory Installed</option>
+              <option value="Site-Built">Site-Built</option>
+              <option value="Not Required">Not Required</option>
+            </select>
+          </div>
+          <div class="input-wrapper">
+            <label class="label">Drip Cap</label>
+            <select id="dripCap">
+              <option value="">Select...</option>
+              <option value="Included">Included</option>
+              <option value="Not Required">Not Required (Under Roof)</option>
+              <option value="By Others">By Others</option>
+            </select>
+          </div>
+          <div class="input-wrapper">
+            <label class="label">Foam Insulation</label>
+            <select id="foamInsulation">
+              <option value="">Select...</option>
+              <option value="Low-Expansion">Low-Expansion Door/Window Foam</option>
+              <option value="Backer Rod Only">Backer Rod Only</option>
+              <option value="Fiberglass">Fiberglass Batt</option>
+            </select>
+          </div>
+          <div class="input-wrapper">
+            <label class="label">Flashing/Air Barrier</label>
+            <input type="text" id="flashing" placeholder="e.g., House wrap integrated, Flex tape">
+          </div>
+          <div class="input-wrapper span-2">
+            <label class="label">Interior Caulking</label>
+            <input type="text" id="intCaulk" placeholder="e.g., Paintable acrylic latex">
+          </div>
+        </div>
+      </div>
+    </div>
 
-        function removeOrder(index) {
-            if (orders.length === 1) return;
-            orders.splice(index, 1);
-            activeOrderIndex = Math.min(activeOrderIndex, orders.length - 1);
-            loadOrderToForm();
-            renderTabs();
-        }
+    <!-- SECTION 6: INSTALLATION SPECIFICATIONS -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-number">6</div>
+        <div class="section-info">
+          <h2>Installation Specifications</h2>
+          <p>Removal, prep, install, and code requirements</p>
+        </div>
+      </div>
+      <div class="section-body">
+        <div class="subsection-title">A. Removal (If Existing Door)</div>
+        <div class="form-grid form-grid-2">
+          <div class="input-wrapper">
+            <label class="label">Demo Scope</label>
+            <select id="demoScope">
+              <option value="">Select...</option>
+              <option value="N/A - New Construction">N/A - New Construction</option>
+              <option value="Remove Slab Only">Remove Slab Only</option>
+              <option value="Remove Slab + Frame">Remove Slab + Frame</option>
+              <option value="Full Demo + Disposal">Full Demo + Disposal</option>
+            </select>
+          </div>
+          <div class="input-wrapper">
+            <label class="label">Disposal</label>
+            <select id="disposal">
+              <option value="">Select...</option>
+              <option value="Included">Included by Installer</option>
+              <option value="By Owner">By Owner</option>
+              <option value="N/A">N/A</option>
+            </select>
+          </div>
+          <div class="input-wrapper span-2">
+            <label class="label">Repair Expectations</label>
+            <input type="text" id="repairExpect" placeholder="e.g., Stucco patch, drywall patch, paint touch-up">
+          </div>
+        </div>
+        
+        <div class="subsection-title">B. Code Requirements</div>
+        <div class="form-grid form-grid-2">
+          <div class="input-wrapper">
+            <label class="label">Fire-Rated (Garage to House)</label>
+            <select id="fireCode">
+              <option value="">Select...</option>
+              <option value="Required - 20 min">Required - 20 min</option>
+              <option value="Required - 45 min">Required - 45 min</option>
+              <option value="Not Required">Not Required</option>
+            </select>
+          </div>
+          <div class="input-wrapper">
+            <label class="label">Tempered Glass Required</label>
+            <select id="temperedReq">
+              <option value="">Select...</option>
+              <option value="Yes - Near Floor">Yes - Near Floor/Hazard Location</option>
+              <option value="No">No</option>
+              <option value="N/A - Solid Door">N/A - Solid Door</option>
+            </select>
+          </div>
+          <div class="input-wrapper">
+            <label class="label">ADA Compliance</label>
+            <select id="adaCompliance">
+              <option value="">Select...</option>
+              <option value="Required">Required</option>
+              <option value="Not Required">Not Required</option>
+            </select>
+          </div>
+          <div class="input-wrapper">
+            <label class="label">Energy Code (Title 24)</label>
+            <select id="title24">
+              <option value="">Select...</option>
+              <option value="Compliant">Compliant</option>
+              <option value="N/A - Interior">N/A - Interior Door</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
 
-        function loadOrderToForm() {
-            const order = orders[activeOrderIndex];
-            
-            document.getElementById('doorWidth').value = order.doorInfo.width;
-            document.getElementById('doorHeight').value = order.doorInfo.height;
-            document.getElementById('doorMaterial').value = order.doorInfo.material;
-            document.getElementById('doorFireRating').value = order.doorInfo.fireRating;
-            document.getElementById('doorHanding').value = order.doorInfo.handing;
-            
-            document.getElementById('frameType').value = order.frame.type;
-            document.getElementById('frameAnchors').value = order.frame.anchors;
-            document.getElementById('frameSilencers').value = order.frame.silencers;
-            
-            document.getElementById('hingeQuantity').value = order.hinges.quantity;
-            document.getElementById('hingeType').value = order.hinges.type;
-            
-            document.getElementById('locksetType').value = order.lockset.type;
-            document.getElementById('locksetFunction').value = order.lockset.function;
-            document.getElementById('locksetCore').value = order.lockset.core;
-            document.getElementById('locksetKeying').value = order.lockset.keying;
-            
-            document.getElementById('panicType').value = order.panicBar.type;
-            document.getElementById('panicTrim').value = order.panicBar.trim;
-            
-            document.getElementById('closerModel').value = order.closer.model;
-            document.getElementById('closerArm').value = order.closer.arm;
-            
-            document.getElementById('flushBolts').value = order.flushBolts;
-            document.getElementById('orderNotes').value = order.notes;
-            
-            document.getElementById('locksetDetails').style.display = 
-                order.lockset.type !== 'None' ? 'block' : 'none';
-            document.getElementById('panicDetails').style.display = 
-                order.panicBar.type !== 'None' ? 'block' : 'none';
-            document.getElementById('closerDetails').style.display = 
-                order.closer.model !== 'None' ? 'block' : 'none';
-            
-            updateSummary();
-        }
+    <!-- SECTION 7: FINISHING & WARRANTY -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-number">7</div>
+        <div class="section-info">
+          <h2>Finishing & Warranty</h2>
+          <p>Paint/stain and warranty information</p>
+        </div>
+      </div>
+      <div class="section-body">
+        <div class="subsection-title">Finishing Requirements</div>
+        <div class="form-grid">
+          <div class="input-wrapper">
+            <label class="label">Finish Type</label>
+            <select id="finishType">
+              <option value="">Select...</option>
+              <option value="Factory Prefinished">Factory Prefinished</option>
+              <option value="Field Paint">Field Paint Required</option>
+              <option value="Field Stain">Field Stain Required</option>
+              <option value="Unfinished">Unfinished</option>
+            </select>
+          </div>
+          <div class="input-wrapper">
+            <label class="label">Number of Coats</label>
+            <input type="text" id="coats" placeholder="e.g., 2 coats">
+          </div>
+          <div class="input-wrapper span-2">
+            <label class="label">Surface Prep / Notes</label>
+            <input type="text" id="surfacePrep" placeholder="e.g., Light sand, prime bare wood">
+          </div>
+        </div>
+        
+        <div class="subsection-title">Warranty Information</div>
+        <div class="form-grid form-grid-2">
+          <div class="input-wrapper">
+            <label class="label">Manufacturer Door Warranty</label>
+            <input type="text" id="mfgWarranty" placeholder="e.g., Lifetime limited, 10-year">
+          </div>
+          <div class="input-wrapper">
+            <label class="label">Hardware Warranty</label>
+            <input type="text" id="hdweWarranty" placeholder="e.g., Lifetime mechanical">
+          </div>
+          <div class="input-wrapper">
+            <label class="label">Installer Workmanship Warranty</label>
+            <input type="text" id="installWarranty" placeholder="e.g., 2 years">
+          </div>
+          <div class="input-wrapper">
+            <label class="label">Warranty Exclusions</label>
+            <input type="text" id="warrantyExclusions" placeholder="e.g., Water intrusion from altered flashing">
+          </div>
+        </div>
+      </div>
+    </div>
 
-        function updateOrder() {
-            const order = orders[activeOrderIndex];
-            
-            order.doorInfo.width = document.getElementById('doorWidth').value;
-            order.doorInfo.height = document.getElementById('doorHeight').value;
-            order.doorInfo.material = document.getElementById('doorMaterial').value;
-            order.doorInfo.fireRating = document.getElementById('doorFireRating').value;
-            order.doorInfo.handing = document.getElementById('doorHanding').value;
-            
-            order.frame.type = document.getElementById('frameType').value;
-            order.frame.anchors = document.getElementById('frameAnchors').value;
-            order.frame.silencers = parseInt(document.getElementById('frameSilencers').value);
-            
-            order.hinges.quantity = parseInt(document.getElementById('hingeQuantity').value);
-            order.hinges.type = document.getElementById('hingeType').value;
-            
-            order.lockset.type = document.getElementById('locksetType').value;
-            order.lockset.function = document.getElementById('locksetFunction').value;
-            order.lockset.core = document.getElementById('locksetCore').value;
-            order.lockset.keying = document.getElementById('locksetKeying').value;
-            
-            order.panicBar.type = document.getElementById('panicType').value;
-            order.panicBar.trim = document.getElementById('panicTrim').value;
-            
-            order.closer.model = document.getElementById('closerModel').value;
-            order.closer.arm = document.getElementById('closerArm').value;
-            
-            order.flushBolts = document.getElementById('flushBolts').value;
-            order.notes = document.getElementById('orderNotes').value;
-            
-            // Auto-calculate hinges
-            const height = parseFloat(order.doorInfo.height);
-            if (!isNaN(height)) {
-                let quantity = 3;
-                if (height > 96) quantity = 5;
-                else if (height > 84) quantity = 4;
-                order.hinges.quantity = quantity;
-                document.getElementById('hingeQuantity').value = quantity;
-            }
-            
-            // Show/hide conditional fields
-            document.getElementById('locksetDetails').style.display = 
-                order.lockset.type !== 'None' ? 'block' : 'none';
-            document.getElementById('panicDetails').style.display = 
-                order.panicBar.type !== 'None' ? 'block' : 'none';
-            document.getElementById('closerDetails').style.display = 
-                order.closer.model !== 'None' ? 'block' : 'none';
-            
-            updateSummary();
-        }
+    <!-- SECTION 8: PROJECT INFO -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-number">8</div>
+        <div class="section-info">
+          <h2>Project Information</h2>
+          <p>Job details and recipient</p>
+        </div>
+      </div>
+      <div class="section-body">
+        <div class="form-grid">
+          <div class="input-wrapper">
+            <label class="label">Project Name</label>
+            <input type="text" id="projectName" placeholder="Project name">
+          </div>
+          <div class="input-wrapper">
+            <label class="label">Project Address</label>
+            <input type="text" id="projectAddress" placeholder="Job site address">
+          </div>
+          <div class="input-wrapper">
+            <label class="label">Client / GC Name</label>
+            <input type="text" id="clientName" placeholder="Client or GC company">
+          </div>
+          <div class="input-wrapper">
+            <label class="label">Date</label>
+            <input type="text" id="specDate">
+          </div>
+          <div class="input-wrapper span-4">
+            <label class="label">Additional Notes / Special Requirements</label>
+            <textarea id="additionalNotes" placeholder="Any special requirements, conditions, or notes..."></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
 
-        function generateOrderSummary(order) {
-            const items = [];
-            
-            // Door
-            if (order.doorInfo.width && order.doorInfo.height) {
-                items.push({
-                    category: 'DOOR',
-                    item: `${order.doorInfo.width}×${order.doorInfo.height} ${order.doorInfo.material} Door`,
-                    details: `${order.doorInfo.fireRating} | ${order.doorInfo.handing} Handing`
-                });
-            }
-            
-            // Frame
-            items.push({
-                category: 'FRAME',
-                item: `${order.frame.type === 'KD' ? '3-Piece Knock Down' : 'One-Piece Welded'} Frame`,
-                details: `${order.frame.anchors} Anchors | ${order.frame.silencers} Silencers`
-            });
-            
-            // Hinges
-            items.push({
-                category: 'HINGES',
-                item: `${order.hinges.quantity} ${order.hinges.type} Hinges`,
-                details: 'Auto-calculated by door height'
-            });
-            
-            // Lockset
-            if (order.lockset.type !== 'None') {
-                let lockDetails = order.lockset.function;
-                if (order.lockset.core !== 'None') lockDetails += ` | ${order.lockset.core} Core`;
-                if (order.lockset.keying) lockDetails += ` | Keying: ${order.lockset.keying}`;
-                
-                items.push({
-                    category: 'LOCKSET',
-                    item: order.lockset.type,
-                    details: lockDetails
-                });
-                
-                items.push({
-                    category: 'LOCKSET COMPONENTS',
-                    item: 'Lock Chassis, Lever Trim, Latch, Strike',
-                    details: 'Standard components included'
-                });
-            }
-            
-            // Panic Bar
-            if (order.panicBar.type !== 'None') {
-                items.push({
-                    category: 'EXIT DEVICE',
-                    item: `Von Duprin ${order.panicBar.type} Panic Bar`,
-                    details: order.panicBar.trim !== 'None' ? `${order.panicBar.trim} Trim` : 'No exterior trim'
-                });
-                
-                const panicComponents = ['Strike Plate', 'Dogging', 'End Caps'];
-                if (order.panicBar.type.includes('Rim')) {
-                    panicComponents.push('1 Rim Latch');
-                } else {
-                    panicComponents.push('2 Vertical Rods', '2 VR Latches');
-                }
-                
-                items.push({
-                    category: 'PANIC COMPONENTS',
-                    item: panicComponents.join(', '),
-                    details: 'Required hardware'
-                });
-            }
-            
-            // Closer
-            if (order.closer.model !== 'None') {
-                items.push({
-                    category: 'CLOSER',
-                    item: order.closer.model,
-                    details: `${order.closer.arm} Arm | Includes Body, Arm, Cover, Hardware`
-                });
-            }
-            
-            // Flush Bolts
-            if (order.flushBolts !== 'None') {
-                items.push({
-                    category: 'FLUSH BOLTS',
-                    item: `${order.flushBolts} Flush Bolts`,
-                    details: 'Top & Bottom Bolts, Dust-Proof Strikes, Faceplates'
-                });
-            }
-            
-            // Notes
-            if (order.notes) {
-                items.push({
-                    category: 'NOTES',
-                    item: order.notes,
-                    details: ''
-                });
-            }
-            
-            return items;
-        }
+    <!-- ACTION BAR -->
+    <div class="action-bar">
+      <button class="btn btn-primary" onclick="generateSpecSheet()">Generate Spec Sheet</button>
+      <button class="btn btn-secondary" onclick="window.print()">Print Form</button>
+    </div>
 
-        function updateSummary() {
-            const summaryDiv = document.getElementById('orderSummary');
-            const order = orders[activeOrderIndex];
-            const items = generateOrderSummary(order);
-            
-            document.getElementById('summaryDoorNumber').textContent = activeOrderIndex + 1;
-            
-            if (items.length === 0) {
-                summaryDiv.innerHTML = '<div class="empty-summary">Configure your door to see the order summary</div>';
-                return;
-            }
-            
-            summaryDiv.innerHTML = items.map(item => `
-                <div class="summary-item">
-                    <div class="summary-category">${item.category}</div>
-                    <div class="summary-item-name">${item.item}</div>
-                    ${item.details ? `<div class="summary-details">${item.details}</div>` : ''}
-                </div>
-            `).join('');
-        }
+  </div>
 
-        function printAllOrders() {
-            const printWindow = window.open('', '', 'width=800,height=600');
-            const doc = printWindow.document;
-            
-            doc.write(`
-                <html>
-                <head>
-                    <title>Door Orders - ${new Date().toLocaleDateString()}</title>
-                    <style>
-                        body { font-family: Arial, sans-serif; padding: 20px; }
-                        h1 { font-size: 24px; font-weight: bold; margin-bottom: 20px; }
-                        h2 { font-size: 18px; font-weight: bold; margin-top: 30px; margin-bottom: 10px; }
-                        .order-section { margin-bottom: 40px; page-break-after: always; }
-                        .order-section:last-child { page-break-after: auto; }
-                        .item { margin-bottom: 15px; padding: 10px; border-left: 3px solid #2563eb; }
-                        .category { font-size: 14px; font-weight: bold; color: #2563eb; text-transform: uppercase; }
-                        .item-name { font-size: 16px; margin: 5px 0; }
-                        .details { font-size: 14px; color: #666; }
-                        @media print {
-                            body { padding: 10px; }
-                            .order-section { page-break-after: always; }
-                        }
-                    </style>
-                </head>
-                <body>
-                    <h1>DOOR ORDERS - ${new Date().toLocaleDateString()}</h1>
-            `);
-            
-            orders.forEach((order, index) => {
-                const items = generateOrderSummary(order);
-                doc.write(`
-                    <div class="order-section">
-                        <h2>DOOR #${index + 1}</h2>
-                        ${items.map(item => `
-                            <div class="item">
-                                <div class="category">${item.category}</div>
-                                <div class="item-name">${item.item}</div>
-                                ${item.details ? `<div class="details">${item.details}</div>` : ''}
-                            </div>
-                        `).join('')}
-                    </div>
-                `);
-            });
-            
-            doc.write(`
-                </body>
-                </html>
-            `);
-            
-            doc.close();
-            printWindow.print();
-        }
+  <script>
+    window.addEventListener('DOMContentLoaded', function() {
+      var today = new Date();
+      document.getElementById('specDate').value = (today.getMonth()+1) + '/' + today.getDate() + '/' + today.getFullYear();
+    });
 
-        // Initialize
-        renderTabs();
-        loadOrderToForm();
-    </script>
+    function get(id) {
+      var el = document.getElementById(id);
+      return el ? (el.value || '') : '';
+    }
+
+    function generateSpecSheet() {
+      var html = '';
+      html += '<!DOCTYPE html><html><head><meta charset="UTF-8">';
+      html += '<title>Data Spec Sheet - ' + get('projectName') + '</title>';
+      html += '<style>';
+      html += 'body{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Arial,sans-serif;margin:0;padding:40px;background:#f9fafb;line-height:1.6;color:#1f2937}';
+      html += '.container{max-width:900px;margin:0 auto;background:white;box-shadow:0 4px 20px rgba(0,0,0,0.1)}';
+      html += '.header{background:linear-gradient(135deg,#1e3a5f 0%,#0c4a6e 100%);color:white;padding:40px;text-align:center}';
+      html += '.company-name{font-size:32px;font-weight:900;margin-bottom:5px}';
+      html += '.company-address{font-size:13px;opacity:0.9}';
+      html += '.doc-title{font-size:22px;font-weight:700;margin-top:20px;text-transform:uppercase;letter-spacing:2px}';
+      html += '.content{padding:40px}';
+      html += '.project-bar{background:#f0f9ff;padding:20px;border-radius:8px;margin-bottom:30px;display:grid;grid-template-columns:repeat(2,1fr);gap:15px}';
+      html += '.project-item{font-size:14px}';
+      html += '.project-label{font-weight:700;color:#0c4a6e}';
+      html += '.section{margin-bottom:30px}';
+      html += '.section-title{background:#1e3a5f;color:white;padding:12px 20px;font-size:16px;font-weight:700;border-radius:6px 6px 0 0;margin:0}';
+      html += '.section-body{border:2px solid #e5e7eb;border-top:none;padding:20px;border-radius:0 0 6px 6px}';
+      html += '.spec-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}';
+      html += '.spec-item{padding:10px;background:#f9fafb;border-radius:4px}';
+      html += '.spec-label{font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;margin-bottom:4px}';
+      html += '.spec-value{font-size:14px;color:#1f2937;font-weight:600}';
+      html += '.subsection{margin-top:20px;padding-top:15px;border-top:1px solid #e5e7eb}';
+      html += '.subsection-title{font-size:13px;font-weight:700;color:#0c4a6e;margin-bottom:12px}';
+      html += '.notes-box{background:#fffbeb;border:2px solid #fbbf24;padding:15px;border-radius:6px;margin-top:20px}';
+      html += '.notes-title{font-weight:700;color:#92400e;margin-bottom:8px}';
+      html += '.footer{background:#f3f4f6;padding:25px;text-align:center;font-size:12px;color:#6b7280}';
+      html += '.actions{text-align:center;padding:20px;margin-bottom:20px}';
+      html += 'button{padding:12px 30px;margin:0 8px;background:#1e3a5f;color:white;border:none;border-radius:6px;font-weight:700;cursor:pointer}';
+      html += 'button:hover{background:#0c4a6e}';
+      html += '@media print{.actions{display:none}body{padding:0;background:white}.container{box-shadow:none}}';
+      html += '</style></head><body>';
+      
+      html += '<div class="actions">';
+      html += '<button onclick="window.print()">Print Spec Sheet</button>';
+      html += '<button onclick="window.close()">Close</button>';
+      html += '</div>';
+      
+      html += '<div class="container">';
+      
+      // HEADER
+      html += '<div class="header">';
+      html += '<div class="company-name">ALOHA DOORS, INC.</div>';
+      html += '<div class="company-address">214 Main St. #119, El Segundo, CA 90245</div>';
+      html += '<div class="doc-title">Door Installation Data Spec Sheet</div>';
+      html += '</div>';
+      
+      // CONTENT
+      html += '<div class="content">';
+      
+      // PROJECT INFO BAR
+      html += '<div class="project-bar">';
+      html += '<div class="project-item"><span class="project-label">Project:</span> ' + get('projectName') + '</div>';
+      html += '<div class="project-item"><span class="project-label">Date:</span> ' + get('specDate') + '</div>';
+      html += '<div class="project-item"><span class="project-label">Address:</span> ' + get('projectAddress') + '</div>';
+      html += '<div class="project-item"><span class="project-label">Client/GC:</span> ' + get('clientName') + '</div>';
+      html += '</div>';
+      
+      // SECTION 1: DOOR UNIT
+      html += '<div class="section">';
+      html += '<div class="section-title">1. Door Unit Identification</div>';
+      html += '<div class="section-body"><div class="spec-grid">';
+      html += '<div class="spec-item"><div class="spec-label">Door Type</div><div class="spec-value">' + (get('doorType') || '-') + '</div></div>';
+      html += '<div class="spec-item"><div class="spec-label">Material</div><div class="spec-value">' + (get('doorMaterial') || '-') + '</div></div>';
+      html += '<div class="spec-item"><div class="spec-label">Panel Style</div><div class="spec-value">' + (get('panelStyle') || '-') + '</div></div>';
+      html += '<div class="spec-item"><div class="spec-label">Thickness</div><div class="spec-value">' + (get('doorThickness') || '-') + '</div></div>';
+      html += '<div class="spec-item"><div class="spec-label">Rough Opening</div><div class="spec-value">' + (get('roughOpening') || '-') + '</div></div>';
+      html += '<div class="spec-item"><div class="spec-label">Unit Size</div><div class="spec-value">' + (get('unitSize') || '-') + '</div></div>';
+      html += '<div class="spec-item"><div class="spec-label">Net Frame Size</div><div class="spec-value">' + (get('netFrameSize') || '-') + '</div></div>';
+      html += '<div class="spec-item"><div class="spec-label">Door Slab Size</div><div class="spec-value">' + (get('slabSize') || '-') + '</div></div>';
+      html += '<div class="spec-item"><div class="spec-label">Swing Direction</div><div class="spec-value">' + (get('swingDirection') || '-') + '</div></div>';
+      html += '<div class="spec-item"><div class="spec-label">Fire Rating</div><div class="spec-value">' + (get('fireRating') || '-') + '</div></div>';
+      html += '<div class="spec-item"><div class="spec-label">U-Factor</div><div class="spec-value">' + (get('uFactor') || '-') + '</div></div>';
+      html += '<div class="spec-item"><div class="spec-label">SHGC</div><div class="spec-value">' + (get('shgc') || '-') + '</div></div>';
+      html += '</div>';
+      if (get('manufacturer')) {
+        html += '<div class="subsection"><div class="spec-label">Manufacturer / Model / SKU</div><div class="spec-value">' + get('manufacturer') + '</div></div>';
+      }
+      html += '</div></div>';
+      
+      // SECTION 2: FRAME
+      html += '<div class="section">';
+      html += '<div class="section-title">2. Frame / Jamb Assembly</div>';
+      html += '<div class="section-body"><div class="spec-grid">';
+      html += '<div class="spec-item"><div class="spec-label">Jamb Material</div><div class="spec-value">' + (get('jambMaterial') || '-') + '</div></div>';
+      html += '<div class="spec-item"><div class="spec-label">Jamb Width</div><div class="spec-value">' + (get('jambWidth') || '-') + '</div></div>';
+      html += '<div class="spec-item"><div class="spec-label">Prehung/Slab</div><div class="spec-value">' + (get('prehungSlab') || '-') + '</div></div>';
+      html += '<div class="spec-item"><div class="spec-label">Finish</div><div class="spec-value">' + (get('jambFinish') || '-') + '</div></div>';
+      html += '<div class="spec-item"><div class="spec-label">Weatherstripping</div><div class="spec-value">' + (get('weatherstripping') || '-') + '</div></div>';
+      html += '<div class="spec-item"><div class="spec-label">Weatherstrip Color</div><div class="spec-value">' + (get('weatherstripColor') || '-') + '</div></div>';
+      html += '<div class="spec-item"><div class="spec-label">Sill/Threshold</div><div class="spec-value">' + (get('sillType') || '-') + '</div></div>';
+      html += '<div class="spec-item"><div class="spec-label">Sill Height</div><div class="spec-value">' + (get('sillHeight') || '-') + '</div></div>';
+      html += '<div class="spec-item"><div class="spec-label">Hinge Count</div><div class="spec-value">' + (get('hingeCount') || '-') + '</div></div>';
+      html += '<div class="spec-item"><div class="spec-label">Hinge Type/Finish</div><div class="spec-value">' + (get('hingeFinish') || '-') + '</div></div>';
+      html += '</div>';
+      if (get('frameNotes')) {
+        html += '<div class="subsection"><div class="spec-label">Additional Notes</div><div class="spec-value">' + get('frameNotes') + '</div></div>';
+      }
+      html += '</div></div>';
+      
+      // SECTION 3: HARDWARE
+      html += '<div class="section">';
+      html += '<div class="section-title">3. Hardware Set</div>';
+      html += '<div class="section-body">';
+      html += '<div class="subsection-title">Standard Hardware</div>';
+      html += '<div class="spec-grid">';
+      html += '<div class="spec-item"><div class="spec-label">Hinge Spec</div><div class="spec-value">' + (get('hingeSpec') || '-') + '</div></div>';
+      html += '<div class="spec-item"><div class="spec-label">Strike Plate</div><div class="spec-value">' + (get('strikeSpec') || '-') + '</div></div>';
+      html += '<div class="spec-item"><div class="spec-label">Bore Pattern</div><div class="spec-value">' + (get('borePattern') || '-') + '</div></div>';
+      html += '<div class="spec-item"><div class="spec-label">Reinforcement</div><div class="spec-value">' + (get('reinforcePlates') || '-') + '</div></div>';
+      html += '</div>';
+      html += '<div class="subsection"><div class="subsection-title">Lockset / Handle</div>';
+      html += '<div class="spec-grid">';
+      html += '<div class="spec-item"><div class="spec-label">Handleset Style</div><div class="spec-value">' + (get('handleStyle') || '-') + '</div></div>';
+      html += '<div class="spec-item"><div class="spec-label">Finish</div><div class="spec-value">' + (get('handleFinish') || '-') + '</div></div>';
+      html += '</div>';
+      if (get('locksetModel')) {
+        html += '<div style="margin-top:10px"><div class="spec-label">Model/Brand</div><div class="spec-value">' + get('locksetModel') + '</div></div>';
+      }
+      html += '</div>';
+      html += '<div class="subsection"><div class="subsection-title">Additional Hardware</div>';
+      html += '<div class="spec-grid">';
+      html += '<div class="spec-item"><div class="spec-label">Door Sweep</div><div class="spec-value">' + (get('doorSweep') || '-') + '</div></div>';
+      html += '<div class="spec-item"><div class="spec-label">Astragal</div><div class="spec-value">' + (get('astragal') || '-') + '</div></div>';
+      html += '<div class="spec-item"><div class="spec-label">Security Plate</div><div class="spec-value">' + (get('securityPlate') || '-') + '</div></div>';
+      html += '<div class="spec-item"><div class="spec-label">Door Closer</div><div class="spec-value">' + (get('doorCloser') || '-') + '</div></div>';
+      html += '<div class="spec-item"><div class="spec-label">Peephole</div><div class="spec-value">' + (get('peephole') || '-') + '</div></div>';
+      html += '<div class="spec-item"><div class="spec-label">Kick Plate</div><div class="spec-value">' + (get('kickPlate') || '-') + '</div></div>';
+      html += '</div></div>';
+      html += '</div></div>';
+      
+      // SECTION 4: GLASS
+      html += '<div class="section">';
+      html += '<div class="section-title">4. Glass / Lite Package</div>';
+      html += '<div class="section-body"><div class="spec-grid">';
+      html += '<div class="spec-item"><div class="spec-label">Lite Config</div><div class="spec-value">' + (get('liteConfig') || '-') + '</div></div>';
+      html += '<div class="spec-item"><div class="spec-label">Lite Size</div><div class="spec-value">' + (get('liteSize') || '-') + '</div></div>';
+      html += '<div class="spec-item"><div class="spec-label">Glazing Type</div><div class="spec-value">' + (get('glazingType') || '-') + '</div></div>';
+      html += '<div class="spec-item"><div class="spec-label">Grid Pattern</div><div class="spec-value">' + (get('gridPattern') || '-') + '</div></div>';
+      html += '<div class="spec-item"><div class="spec-label">Grid Color</div><div class="spec-value">' + (get('gridColor') || '-') + '</div></div>';
+      html += '<div class="spec-item"><div class="spec-label">Glass Tint</div><div class="spec-value">' + (get('glassTint') || '-') + '</div></div>';
+      html += '</div></div></div>';
+      
+      // SECTION 5: WEATHER
+      html += '<div class="section">';
+      html += '<div class="section-title">5. Weather & Sealant System</div>';
+      html += '<div class="section-body"><div class="spec-grid">';
+      html += '<div class="spec-item"><div class="spec-label">Ext Sealant</div><div class="spec-value">' + (get('extSealant') || '-') + '</div></div>';
+      html += '<div class="spec-item"><div class="spec-label">Backer Rod</div><div class="spec-value">' + (get('backerRod') || '-') + '</div></div>';
+      html += '<div class="spec-item"><div class="spec-label">Sill Pan</div><div class="spec-value">' + (get('sillPan') || '-') + '</div></div>';
+      html += '<div class="spec-item"><div class="spec-label">Drip Cap</div><div class="spec-value">' + (get('dripCap') || '-') + '</div></div>';
+      html += '<div class="spec-item"><div class="spec-label">Foam Insulation</div><div class="spec-value">' + (get('foamInsulation') || '-') + '</div></div>';
+      html += '<div class="spec-item"><div class="spec-label">Flashing</div><div class="spec-value">' + (get('flashing') || '-') + '</div></div>';
+      html += '</div>';
+      if (get('intCaulk')) {
+        html += '<div class="subsection"><div class="spec-label">Interior Caulking</div><div class="spec-value">' + get('intCaulk') + '</div></div>';
+      }
+      html += '</div></div>';
+      
+      // SECTION 6: INSTALLATION
+      html += '<div class="section">';
+      html += '<div class="section-title">6. Installation & Code Requirements</div>';
+      html += '<div class="section-body">';
+      html += '<div class="subsection-title">Demo/Removal Scope</div>';
+      html += '<div class="spec-grid">';
+      html += '<div class="spec-item"><div class="spec-label">Demo Scope</div><div class="spec-value">' + (get('demoScope') || '-') + '</div></div>';
+      html += '<div class="spec-item"><div class="spec-label">Disposal</div><div class="spec-value">' + (get('disposal') || '-') + '</div></div>';
+      html += '</div>';
+      if (get('repairExpect')) {
+        html += '<div style="margin-top:10px"><div class="spec-label">Repair Expectations</div><div class="spec-value">' + get('repairExpect') + '</div></div>';
+      }
+      html += '<div class="subsection"><div class="subsection-title">Code Requirements</div>';
+      html += '<div class="spec-grid">';
+      html += '<div class="spec-item"><div class="spec-label">Fire-Rated Req</div><div class="spec-value">' + (get('fireCode') || '-') + '</div></div>';
+      html += '<div class="spec-item"><div class="spec-label">Tempered Glass</div><div class="spec-value">' + (get('temperedReq') || '-') + '</div></div>';
+      html += '<div class="spec-item"><div class="spec-label">ADA Compliance</div><div class="spec-value">' + (get('adaCompliance') || '-') + '</div></div>';
+      html += '<div class="spec-item"><div class="spec-label">Title 24</div><div class="spec-value">' + (get('title24') || '-') + '</div></div>';
+      html += '</div></div>';
+      html += '</div></div>';
+      
+      // SECTION 7: FINISHING & WARRANTY
+      html += '<div class="section">';
+      html += '<div class="section-title">7. Finishing & Warranty</div>';
+      html += '<div class="section-body">';
+      html += '<div class="subsection-title">Finishing</div>';
+      html += '<div class="spec-grid">';
+      html += '<div class="spec-item"><div class="spec-label">Finish Type</div><div class="spec-value">' + (get('finishType') || '-') + '</div></div>';
+      html += '<div class="spec-item"><div class="spec-label">Coats</div><div class="spec-value">' + (get('coats') || '-') + '</div></div>';
+      html += '</div>';
+      if (get('surfacePrep')) {
+        html += '<div style="margin-top:10px"><div class="spec-label">Surface Prep</div><div class="spec-value">' + get('surfacePrep') + '</div></div>';
+      }
+      html += '<div class="subsection"><div class="subsection-title">Warranty</div>';
+      html += '<div class="spec-grid">';
+      html += '<div class="spec-item"><div class="spec-label">Mfg Door Warranty</div><div class="spec-value">' + (get('mfgWarranty') || '-') + '</div></div>';
+      html += '<div class="spec-item"><div class="spec-label">Hardware Warranty</div><div class="spec-value">' + (get('hdweWarranty') || '-') + '</div></div>';
+      html += '<div class="spec-item"><div class="spec-label">Install Warranty</div><div class="spec-value">' + (get('installWarranty') || '-') + '</div></div>';
+      html += '<div class="spec-item"><div class="spec-label">Exclusions</div><div class="spec-value">' + (get('warrantyExclusions') || '-') + '</div></div>';
+      html += '</div></div>';
+      html += '</div></div>';
+      
+      // NOTES
+      if (get('additionalNotes')) {
+        html += '<div class="notes-box">';
+        html += '<div class="notes-title">Additional Notes</div>';
+        html += '<div>' + get('additionalNotes') + '</div>';
+        html += '</div>';
+      }
+      
+      html += '</div>'; // content
+      
+      // FOOTER
+      html += '<div class="footer">';
+      html += 'Prepared by <strong>Aloha Doors, Inc.</strong> | 214 Main St. #119, El Segundo, CA 90245<br>';
+      html += 'This specification sheet is for reference and bidding purposes.';
+      html += '</div>';
+      
+      html += '</div>'; // container
+      html += '</body></html>';
+      
+      var win = window.open('', '_blank', 'width=1000,height=900');
+      if (win && win.document) {
+        win.document.write(html);
+        win.document.close();
+      } else {
+        var blob = new Blob([html], {type: 'text/html'});
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = 'spec_sheet_' + (get('projectName') || 'door').replace(/[^a-z0-9]/gi, '_') + '.html';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        alert('Spec sheet downloaded as HTML file.');
+      }
+    }
+  </script>
 </body>
 </html>
