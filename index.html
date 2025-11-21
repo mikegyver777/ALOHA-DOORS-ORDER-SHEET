@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Door Ordering Tool - Alta Cal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 32px;
+            color: #1a1a1a;
+            margin-bottom: 20px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+        }
+
+        .btn-success {
+            background: #16a34a;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #15803d;
+        }
+
+        .btn-danger {
+            background: #dc2626;
+            color: white;
+            padding: 8px 12px;
+            font-size: 12px;
+        }
+
+        .btn-danger:hover {
+            background: #b91c1c;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .tab {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .tab-btn {
+            padding: 12px 20px;
+            border: none;
+            background: #e5e7eb;
+            color: #374151;
+            cursor: pointer;
+            font-weight: 600;
+            border-radius: 8px 8px 0 0;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            background: #2563eb;
+            color: white;
+        }
+
+        .tab-btn:hover:not(.active) {
+            background: #d1d5db;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        @media (max-width: 1024px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .card h2 {
+            font-size: 20px;
+            color: #1a1a1a;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border 0.2s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .help-text {
+            font-size: 12px;
+            color: #6b7280;
+            margin-top: 5px;
+        }
+
+        .summary-item {
+            border-left: 4px solid #2563eb;
+            padding: 15px;
+            margin-bottom: 15px;
+            background: #f9fafb;
+            border-radius: 4px;
+        }
+
+        .summary-category {
+            font-size: 11px;
+            font-weight: 700;
+            color: #2563eb;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .summary-item-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin: 5px 0;
+        }
+
+        .summary-details {
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .empty-summary {
+            text-align: center;
+            padding: 60px 20px;
+            color: #9ca3af;
+        }
+
+        .sticky {
+            position: sticky;
+            top: 20px;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .header, .tabs, .btn, .card {
+                box-shadow: none;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header no-print">
+            <h1>🚪 Door Ordering Tool</h1>
+            <div class="header-actions">
+                <button class="btn btn-primary" onclick="printAllOrders()">🖨️ Print All Orders</button>
+                <button class="btn btn-success" onclick="addNewOrder()">➕ Add New Door</button>
+            </div>
+            <div class="tabs" id="orderTabs"></div>
+        </div>
+
+        <div class="main-grid">
+            <!-- Configuration Panel -->
+            <div id="configPanel">
+                <!-- Door Information -->
+                <div class="card">
+                    <h2>Door Information</h2>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Width (inches)</label>
+                            <input type="number" id="doorWidth" oninput="updateOrder()" placeholder="36">
+                        </div>
+                        <div class="form-group">
+                            <label>Height (inches)</label>
+                            <input type="number" id="doorHeight" oninput="updateOrder()" placeholder="84">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Material</label>
+                            <select id="doorMaterial" onchange="updateOrder()">
+                                <option value="HM">HM - Hollow Metal</option>
+                                <option value="WD">WD - Wood</option>
+                                <option value="AL">AL - Aluminum</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Fire Rating</label>
+                            <select id="doorFireRating" onchange="updateOrder()">
+                                <option value="None">None</option>
+                                <option value="20 Min">20 Min</option>
+                                <option value="45 Min">45 Min</option>
+                                <option value="90 Min">90 Min</option>
+                                <option value="3 Hour">3 Hour</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Handing</label>
+                        <select id="doorHanding" onchange="updateOrder()">
+                            <option value="LH">LH - Left Hand</option>
+                            <option value="RH">RH - Right Hand</option>
+                            <option value="LHR">LHR - Left Hand Reverse</option>
+                            <option value="RHR">RHR - Right Hand Reverse</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Frame -->
+                <div class="card">
+                    <h2>Frame</h2>
+                    <div class="form-group">
+                        <label>Frame Type</label>
+                        <select id="frameType" onchange="updateOrder()">
+                            <option value="KD">3-Piece Knock Down (KD)</option>
+                            <option value="Welded">One-Piece Welded</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Anchors</label>
+                        <select id="frameAnchors" onchange="updateOrder()">
+                            <option value="Steel Stud">Steel Stud</option>
+                            <option value="Wood Stud">Wood Stud</option>
+                            <option value="Masonry">Masonry</option>
+                            <option value="Compression">Compression</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Silencers</label>
+                        <input type="number" id="frameSilencers" value="3" oninput="updateOrder()">
+                        <div class="help-text">Standard is 3 per opening</div>
+                    </div>
+                </div>
+
+                <!-- Hinges -->
+                <div class="card">
+                    <h2>Hinges</h2>
+                    <div class="form-group">
+                        <label>Quantity (Auto-Calculated)</label>
+                        <input type="number" id="hingeQuantity" value="3" oninput="updateOrder()">
+                        <div class="help-text">3 for ≤84", 4 for ≤96", 5 for >96"</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Type</label>
+                        <select id="hingeType" onchange="updateOrder()">
+                            <option value="Standard">Standard</option>
+                            <option value="Heavy Duty">Heavy Duty</option>
+                            <option value="Wide Throw">Wide Throw</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Lockset -->
+                <div class="card">
+                    <h2>Lockset</h2>
+                    <div class="form-group">
+                        <label>Lockset Type</label>
+                        <select id="locksetType" onchange="updateOrder()">
+                            <option value="None">None</option>
+                            <option value="Schlage Lever Lock">Schlage Lever Lock</option>
+                            <option value="Schlage IC - 7 Pin - AL Series">Schlage IC - 7 Pin - AL Series</option>
+                            <option value="BEST IC - 7 Pin">BEST IC - 7 Pin</option>
+                        </select>
+                    </div>
+                    <div id="locksetDetails" style="display: none;">
+                        <div class="form-group">
+                            <label>Function</label>
+                            <select id="locksetFunction" onchange="updateOrder()">
+                                <option value="Passage">Passage</option>
+                                <option value="Privacy">Privacy</option>
+                                <option value="Office">Office</option>
+                                <option value="Classroom">Classroom</option>
+                                <option value="Storeroom">Storeroom</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Core Type</label>
+                            <select id="locksetCore" onchange="updateOrder()">
+                                <option value="None">None</option>
+                                <option value="7-Pin SFIC">7-Pin SFIC</option>
+                                <option value="7-Pin LFIC">7-Pin LFIC</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Keying (MK/GMK)</label>
+                            <input type="text" id="locksetKeying" oninput="updateOrder()" placeholder="Master Key ID">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Panic Bar -->
+                <div class="card">
+                    <h2>Exit Device (Panic Bar)</h2>
+                    <div class="form-group">
+                        <label>Type</label>
+                        <select id="panicType" onchange="updateOrder()">
+                            <option value="None">None</option>
+                            <option value="Rim">Von Duprin Rim</option>
+                            <option value="Concealed Vertical Rod">Von Duprin Concealed VR</option>
+                            <option value="Surface Vertical Rod">Von Duprin Surface VR</option>
+                        </select>
+                    </div>
+                    <div id="panicDetails" style="display: none;">
+                        <div class="form-group">
+                            <label>Outside Trim</label>
+                            <select id="panicTrim" onchange="updateOrder()">
+                                <option value="None">None</option>
+                                <option value="Escutcheon">Escutcheon</option>
+                                <option value="Lever">Lever</option>
+                                <option value="Thumbpiece">Thumbpiece</option>
+                                <option value="Keyed">Keyed</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Closer -->
+                <div class="card">
+                    <h2>Door Closer</h2>
+                    <div class="form-group">
+                        <label>Model</label>
+                        <select id="closerModel" onchange="updateOrder()">
+                            <option value="None">None</option>
+                            <option value="LCN 4041">LCN 4041</option>
+                            <option value="Norton 8500">Norton 8500</option>
+                            <option value="Cal-Royal 900 Series">Cal-Royal 900 Series</option>
+                        </select>
+                    </div>
+                    <div id="closerDetails" style="display: none;">
+                        <div class="form-group">
+                            <label>Arm Type</label>
+                            <select id="closerArm" onchange="updateOrder()">
+                                <option value="Regular">Regular</option>
+                                <option value="Parallel">Parallel</option>
+                                <option value="Top Jamb">Top Jamb</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Flush Bolts -->
+                <div class="card">
+                    <h2>Flush Bolts (Pairs)</h2>
+                    <div class="form-group">
+                        <label>Type</label>
+                        <select id="flushBolts" onchange="updateOrder()">
+                            <option value="None">None</option>
+                            <option value="Manual">Manual</option>
+                            <option value="Automatic">Automatic</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Notes -->
+                <div class="card">
+                    <h2>Notes</h2>
+                    <div class="form-group">
+                        <textarea id="orderNotes" oninput="updateOrder()" placeholder="Special instructions or requirements..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Summary -->
+            <div>
+                <div class="card sticky">
+                    <h2>📋 Order Summary - Door #<span id="summaryDoorNumber">1</span></h2>
+                    <div id="orderSummary"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let orders = [createNewOrderData()];
+        let activeOrderIndex = 0;
+
+        function createNewOrderData() {
+            return {
+                id: Date.now(),
+                doorInfo: {
+                    width: '',
+                    height: '',
+                    material: 'HM',
+                    fireRating: 'None',
+                    handing: 'LH'
+                },
+                frame: {
+                    type: 'KD',
+                    anchors: 'Steel Stud',
+                    silencers: 3
+                },
+                hinges: {
+                    quantity: 3,
+                    type: 'Standard'
+                },
+                lockset: {
+                    type: 'None',
+                    function: 'Passage',
+                    core: 'None',
+                    keying: ''
+                },
+                panicBar: {
+                    type: 'None',
+                    trim: 'None'
+                },
+                closer: {
+                    model: 'None',
+                    arm: 'Regular'
+                },
+                flushBolts: 'None',
+                notes: ''
+            };
+        }
+
+        function renderTabs() {
+            const tabsContainer = document.getElementById('orderTabs');
+            tabsContainer.innerHTML = '';
+            
+            orders.forEach((order, index) => {
+                const tabDiv = document.createElement('div');
+                tabDiv.className = 'tab';
+                
+                const btn = document.createElement('button');
+                btn.className = 'tab-btn' + (index === activeOrderIndex ? ' active' : '');
+                btn.textContent = `Door #${index + 1}`;
+                btn.onclick = () => switchToOrder(index);
+                
+                tabDiv.appendChild(btn);
+                
+                if (orders.length > 1) {
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.className = 'btn btn-danger';
+                    deleteBtn.textContent = '✕';
+                    deleteBtn.onclick = () => removeOrder(index);
+                    tabDiv.appendChild(deleteBtn);
+                }
+                
+                tabsContainer.appendChild(tabDiv);
+            });
+        }
+
+        function switchToOrder(index) {
+            activeOrderIndex = index;
+            loadOrderToForm();
+            renderTabs();
+        }
+
+        function addNewOrder() {
+            orders.push(createNewOrderData());
+            activeOrderIndex = orders.length - 1;
+            loadOrderToForm();
+            renderTabs();
+        }
+
+        function removeOrder(index) {
+            if (orders.length === 1) return;
+            orders.splice(index, 1);
+            activeOrderIndex = Math.min(activeOrderIndex, orders.length - 1);
+            loadOrderToForm();
+            renderTabs();
+        }
+
+        function loadOrderToForm() {
+            const order = orders[activeOrderIndex];
+            
+            document.getElementById('doorWidth').value = order.doorInfo.width;
+            document.getElementById('doorHeight').value = order.doorInfo.height;
+            document.getElementById('doorMaterial').value = order.doorInfo.material;
+            document.getElementById('doorFireRating').value = order.doorInfo.fireRating;
+            document.getElementById('doorHanding').value = order.doorInfo.handing;
+            
+            document.getElementById('frameType').value = order.frame.type;
+            document.getElementById('frameAnchors').value = order.frame.anchors;
+            document.getElementById('frameSilencers').value = order.frame.silencers;
+            
+            document.getElementById('hingeQuantity').value = order.hinges.quantity;
+            document.getElementById('hingeType').value = order.hinges.type;
+            
+            document.getElementById('locksetType').value = order.lockset.type;
+            document.getElementById('locksetFunction').value = order.lockset.function;
+            document.getElementById('locksetCore').value = order.lockset.core;
+            document.getElementById('locksetKeying').value = order.lockset.keying;
+            
+            document.getElementById('panicType').value = order.panicBar.type;
+            document.getElementById('panicTrim').value = order.panicBar.trim;
+            
+            document.getElementById('closerModel').value = order.closer.model;
+            document.getElementById('closerArm').value = order.closer.arm;
+            
+            document.getElementById('flushBolts').value = order.flushBolts;
+            document.getElementById('orderNotes').value = order.notes;
+            
+            document.getElementById('locksetDetails').style.display = 
+                order.lockset.type !== 'None' ? 'block' : 'none';
+            document.getElementById('panicDetails').style.display = 
+                order.panicBar.type !== 'None' ? 'block' : 'none';
+            document.getElementById('closerDetails').style.display = 
+                order.closer.model !== 'None' ? 'block' : 'none';
+            
+            updateSummary();
+        }
+
+        function updateOrder() {
+            const order = orders[activeOrderIndex];
+            
+            order.doorInfo.width = document.getElementById('doorWidth').value;
+            order.doorInfo.height = document.getElementById('doorHeight').value;
+            order.doorInfo.material = document.getElementById('doorMaterial').value;
+            order.doorInfo.fireRating = document.getElementById('doorFireRating').value;
+            order.doorInfo.handing = document.getElementById('doorHanding').value;
+            
+            order.frame.type = document.getElementById('frameType').value;
+            order.frame.anchors = document.getElementById('frameAnchors').value;
+            order.frame.silencers = parseInt(document.getElementById('frameSilencers').value);
+            
+            order.hinges.quantity = parseInt(document.getElementById('hingeQuantity').value);
+            order.hinges.type = document.getElementById('hingeType').value;
+            
+            order.lockset.type = document.getElementById('locksetType').value;
+            order.lockset.function = document.getElementById('locksetFunction').value;
+            order.lockset.core = document.getElementById('locksetCore').value;
+            order.lockset.keying = document.getElementById('locksetKeying').value;
+            
+            order.panicBar.type = document.getElementById('panicType').value;
+            order.panicBar.trim = document.getElementById('panicTrim').value;
+            
+            order.closer.model = document.getElementById('closerModel').value;
+            order.closer.arm = document.getElementById('closerArm').value;
+            
+            order.flushBolts = document.getElementById('flushBolts').value;
+            order.notes = document.getElementById('orderNotes').value;
+            
+            // Auto-calculate hinges
+            const height = parseFloat(order.doorInfo.height);
+            if (!isNaN(height)) {
+                let quantity = 3;
+                if (height > 96) quantity = 5;
+                else if (height > 84) quantity = 4;
+                order.hinges.quantity = quantity;
+                document.getElementById('hingeQuantity').value = quantity;
+            }
+            
+            // Show/hide conditional fields
+            document.getElementById('locksetDetails').style.display = 
+                order.lockset.type !== 'None' ? 'block' : 'none';
+            document.getElementById('panicDetails').style.display = 
+                order.panicBar.type !== 'None' ? 'block' : 'none';
+            document.getElementById('closerDetails').style.display = 
+                order.closer.model !== 'None' ? 'block' : 'none';
+            
+            updateSummary();
+        }
+
+        function generateOrderSummary(order) {
+            const items = [];
+            
+            // Door
+            if (order.doorInfo.width && order.doorInfo.height) {
+                items.push({
+                    category: 'DOOR',
+                    item: `${order.doorInfo.width}×${order.doorInfo.height} ${order.doorInfo.material} Door`,
+                    details: `${order.doorInfo.fireRating} | ${order.doorInfo.handing} Handing`
+                });
+            }
+            
+            // Frame
+            items.push({
+                category: 'FRAME',
+                item: `${order.frame.type === 'KD' ? '3-Piece Knock Down' : 'One-Piece Welded'} Frame`,
+                details: `${order.frame.anchors} Anchors | ${order.frame.silencers} Silencers`
+            });
+            
+            // Hinges
+            items.push({
+                category: 'HINGES',
+                item: `${order.hinges.quantity} ${order.hinges.type} Hinges`,
+                details: 'Auto-calculated by door height'
+            });
+            
+            // Lockset
+            if (order.lockset.type !== 'None') {
+                let lockDetails = order.lockset.function;
+                if (order.lockset.core !== 'None') lockDetails += ` | ${order.lockset.core} Core`;
+                if (order.lockset.keying) lockDetails += ` | Keying: ${order.lockset.keying}`;
+                
+                items.push({
+                    category: 'LOCKSET',
+                    item: order.lockset.type,
+                    details: lockDetails
+                });
+                
+                items.push({
+                    category: 'LOCKSET COMPONENTS',
+                    item: 'Lock Chassis, Lever Trim, Latch, Strike',
+                    details: 'Standard components included'
+                });
+            }
+            
+            // Panic Bar
+            if (order.panicBar.type !== 'None') {
+                items.push({
+                    category: 'EXIT DEVICE',
+                    item: `Von Duprin ${order.panicBar.type} Panic Bar`,
+                    details: order.panicBar.trim !== 'None' ? `${order.panicBar.trim} Trim` : 'No exterior trim'
+                });
+                
+                const panicComponents = ['Strike Plate', 'Dogging', 'End Caps'];
+                if (order.panicBar.type.includes('Rim')) {
+                    panicComponents.push('1 Rim Latch');
+                } else {
+                    panicComponents.push('2 Vertical Rods', '2 VR Latches');
+                }
+                
+                items.push({
+                    category: 'PANIC COMPONENTS',
+                    item: panicComponents.join(', '),
+                    details: 'Required hardware'
+                });
+            }
+            
+            // Closer
+            if (order.closer.model !== 'None') {
+                items.push({
+                    category: 'CLOSER',
+                    item: order.closer.model,
+                    details: `${order.closer.arm} Arm | Includes Body, Arm, Cover, Hardware`
+                });
+            }
+            
+            // Flush Bolts
+            if (order.flushBolts !== 'None') {
+                items.push({
+                    category: 'FLUSH BOLTS',
+                    item: `${order.flushBolts} Flush Bolts`,
+                    details: 'Top & Bottom Bolts, Dust-Proof Strikes, Faceplates'
+                });
+            }
+            
+            // Notes
+            if (order.notes) {
+                items.push({
+                    category: 'NOTES',
+                    item: order.notes,
+                    details: ''
+                });
+            }
+            
+            return items;
+        }
+
+        function updateSummary() {
+            const summaryDiv = document.getElementById('orderSummary');
+            const order = orders[activeOrderIndex];
+            const items = generateOrderSummary(order);
+            
+            document.getElementById('summaryDoorNumber').textContent = activeOrderIndex + 1;
+            
+            if (items.length === 0) {
+                summaryDiv.innerHTML = '<div class="empty-summary">Configure your door to see the order summary</div>';
+                return;
+            }
+            
+            summaryDiv.innerHTML = items.map(item => `
+                <div class="summary-item">
+                    <div class="summary-category">${item.category}</div>
+                    <div class="summary-item-name">${item.item}</div>
+                    ${item.details ? `<div class="summary-details">${item.details}</div>` : ''}
+                </div>
+            `).join('');
+        }
+
+        function printAllOrders() {
+            const printWindow = window.open('', '', 'width=800,height=600');
+            const doc = printWindow.document;
+            
+            doc.write(`
+                <html>
+                <head>
+                    <title>Door Orders - ${new Date().toLocaleDateString()}</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; padding: 20px; }
+                        h1 { font-size: 24px; font-weight: bold; margin-bottom: 20px; }
+                        h2 { font-size: 18px; font-weight: bold; margin-top: 30px; margin-bottom: 10px; }
+                        .order-section { margin-bottom: 40px; page-break-after: always; }
+                        .order-section:last-child { page-break-after: auto; }
+                        .item { margin-bottom: 15px; padding: 10px; border-left: 3px solid #2563eb; }
+                        .category { font-size: 14px; font-weight: bold; color: #2563eb; text-transform: uppercase; }
+                        .item-name { font-size: 16px; margin: 5px 0; }
+                        .details { font-size: 14px; color: #666; }
+                        @media print {
+                            body { padding: 10px; }
+                            .order-section { page-break-after: always; }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <h1>DOOR ORDERS - ${new Date().toLocaleDateString()}</h1>
+            `);
+            
+            orders.forEach((order, index) => {
+                const items = generateOrderSummary(order);
+                doc.write(`
+                    <div class="order-section">
+                        <h2>DOOR #${index + 1}</h2>
+                        ${items.map(item => `
+                            <div class="item">
+                                <div class="category">${item.category}</div>
+                                <div class="item-name">${item.item}</div>
+                                ${item.details ? `<div class="details">${item.details}</div>` : ''}
+                            </div>
+                        `).join('')}
+                    </div>
+                `);
+            });
+            
+            doc.write(`
+                </body>
+                </html>
+            `);
+            
+            doc.close();
+            printWindow.print();
+        }
+
+        // Initialize
+        renderTabs();
+        loadOrderToForm();
+    </script>
+</body>
+</html>
